@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#075e54">
+<title>💕 Bizim Sohbetimiz</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #0b141a; }
+
+/* Giriş */
+.login { position: fixed; inset: 0; background: linear-gradient(135deg, #075e54, #25d366); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+.login-box { background: white; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.login-logo { font-size: 64px; margin-bottom: 10px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+.login-box h1 { color: #075e54; margin-bottom: 8px; font-size: 22px; }
+.login-box p { color: #667781; font-size: 14px; margin-bottom: 25px; }
+.login-box input { width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 14px; font-size: 16px; text-align: center; letter-spacing: 2px; font-weight: 700; outline: none; text-transform: uppercase; }
+.login-box input:focus { border-color: #25d366; }
+.login-box button { width: 100%; padding: 15px; margin-top: 15px; background: #25d366; color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; }
+.login-box button:active { transform: scale(0.97); }
+.err { color: #e74c3c; font-size: 14px; margin-top: 12px; min-height: 20px; }
+
+/* Sohbet */
+.chat { display: none; flex-direction: column; height: 100vh; height: 100dvh; background: #efeae2; }
+.chat.on { display: flex; }
+.header { background: #075e54; color: white; padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); z-index: 10; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; background: #25d366; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+.title { font-size: 16px; font-weight: 600; }
+.status { font-size: 12px; opacity: 0.85; }
+
+.msgs { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; scroll-behavior: smooth; }
+.msgs::-webkit-scrollbar { width: 5px; }
+.msgs::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 3px; }
+
+.msg { max-width: 80%; padding: 8px 12px; border-radius: 14px; word-wrap: break-word; font-size: 15px; line-height: 1.4; animation: gel 0.25s ease; box-shadow: 0 1px 1px rgba(0,0,0,0.08); }
+@keyframes gel { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.msg.ben { align-self: flex-end; background: #d9fdd3; color: #111b21; border-bottom-right-radius: 3px; }
+.msg.diger { align-self: flex-start; background: white; color: #111b21; border-bottom-left-radius: 3px; }
+.msg .isim { font-size: 12px; font-weight: 700; color: #075e54; margin-bottom: 3px; }
+.msg .saat { font-size: 10px; color: #667781; text-align: right; margin-top: 3px; }
+.msg.ben .saat::after { content: ' ✓✓'; color: #53bdeb; }
+
+.sistem { align-self: center; background: rgba(0,0,0,0.08); color: #54656f; font-size: 12px; padding: 5px 12px; border-radius: 10px; margin: 4px 0; }
+
+.yaziyor { height: 22px; padding: 0 20px; font-size: 12px; color: #667781; font-style: italic; background: #efeae2; }
+
+.form { display: flex; gap: 8px; padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); background: #f0f2f5; align-items: center; }
+.form input { flex: 1; padding: 12px 18px; border: none; border-radius: 25px; outline: none; font-size: 15px; background: white; color: #111b21; }
+.form button { width: 46px; height: 46px; border-radius: 50%; background: #25d366; color: white; border: none; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.form button:active { transform: scale(0.92); }
+
+@media (max-width: 480px) { .msg { max-width: 85%; font-size: 14px; } .login-box { padding: 30px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <div class="login-box">
+    <div class="login-logo">💕</div>
+    <h1>Bizim Sohbetimiz</h1>
+    <p>Sadece ikimize özel</p>
+    <input type="text" id="key" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off">
+    <button id="gir">Giriş Yap 💌</button>
+    <div class="err" id="err"></div>
+  </div>
+</div>
+
+<div class="chat" id="chat">
+  <div class="header">
+    <div class="avatar" id="av">?</div>
+    <div>
+      <div class="title">💕 Bizim Sohbetimiz</div>
+      <div class="status" id="onl">Çevrimiçi: 0</div>
+    </div>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="yaziyor" id="yz"></div>
+  <form class="form" id="form">
+    <input type="text" id="inp" placeholder="Mesaj yaz..." autocomplete="off">
+    <button type="submit">➤</button>
+  </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const sock = io();
+let ben = '';
+let myKey = '';
+
+const $ = id => document.getElementById(id);
+
+// Key formatla
+$('key').addEventListener('input', e => {
+  let v = e.target.value.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+  e.target.value = (v.match(/.{1,4}/g) || []).join('-').slice(0, 19);
+});
+
+// Giriş
+$('gir').onclick = () => {
+  const k = $('key').value.trim();
+  if (k.length < 19) { $('err').textContent = 'Key eksik'; return; }
+  myKey = k;
+  sock.emit('giris', { key: k });
+};
+$('key').addEventListener('keypress', e => { if (e.key === 'Enter') $('gir').click(); });
+
+// Otomatik giriş
+const saved = localStorage.getItem('ask_key');
+if (saved) { myKey = saved; sock.emit('giris', { key: saved }); }
+
+sock.on('giris-ok', ({ name }) => {
+  ben = name;
+  localStorage.setItem('ask_key', myKey);
+  $('login').style.display = 'none';
+  $('chat').classList.add('on');
+  $('av').textContent = name.charAt(0).toUpperCase();
+});
+
+sock.on('hata', msg => {
+  $('err').textContent = msg;
+  localStorage.removeItem('ask_key');
+  $('login').style.display = 'flex';
+  $('chat').classList.remove('on');
+});
+
+sock.on('gecmis', msgs => {
+  $('msgs').innerHTML = '';
+  msgs.forEach(ekle);
+  asagi();
+});
+
+sock.on('yeni', m => { ekle(m); asagi(); });
+
+sock.on('sistem', txt => {
+  const d = document.createElement('div');
+  d.className = 'sistem';
+  d.textContent = txt;
+  $('msgs').appendChild(d);
+  asagi();
+});
+
+sock.on('online', list => {
+  $('onl').textContent = 'Çevrimiçi: ' + list.length;
+});
+
+sock.on('yaziyor', name => {
+  $('yz').textContent = name + ' yazıyor...';
+  clearTimeout(window.t);
+  window.t = setTimeout(() => $('yz').textContent = '', 2500);
+});
+
+sock.on('mesaj-silindi', id => {
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (el) el.remove();
+});
+
+sock.on('temizle', () => { $('msgs').innerHTML = ''; });
+
+// Gönder
+$('form').onsubmit = e => {
+  e.preventDefault();
+  const v = $('inp').value.trim();
+  if (!v) return;
+  sock.emit('mesaj', v);
+  $('inp').value = '';
+  $('inp').focus();
+};
+
+// Yazıyor
+let tSent = false;
+$('inp').addEventListener('input', () => {
+  if (!tSent) {
+    sock.emit('yaziyor');
+    tSent = true;
+    setTimeout(() => tSent = false, 1500);
+  }
+});
+
+function ekle(m) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + (m.sender === ben ? 'ben' : 'diger');
+  d.dataset.id = m.id;
+  const saat = new Date(m.created_at + 'Z').toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+  d.innerHTML = `
+    ${m.sender !== ben ? `<div class="isim">${esc(m.sender)}</div>` : ''}
+    <div>${esc(m.message)}</div>
+    <div class="saat">${saat}</div>
+  `;
+  $('msgs').appendChild(d);
+}
+
+function asagi() { $('msgs').scrollTop = $('msgs').scrollHeight; }
+function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+window.addEventListener('resize', asagi);
+</script>
+</body>
+</html>
