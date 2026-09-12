@@ -3,66 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel</title>
+<title>🔐 Admin Panel</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f0f2f5; color: #1c1e21; min-height: 100vh; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1c1e21; min-height: 100vh; }
 
 .login { position: fixed; inset: 0; background: linear-gradient(135deg, #1c1e21, #2c2f33); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
-.login-box { background: white; padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; }
-.logo { font-size: 50px; margin-bottom: 15px; }
-.login-box h1 { margin-bottom: 25px; font-size: 22px; }
-.login-box input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; outline: none; }
-.login-box input:focus { border-color: #075e54; }
-.login-box button { width: 100%; padding: 14px; margin-top: 15px; background: #075e54; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+.lbox { background: white; padding: 40px 30px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; }
+.llogo { font-size: 50px; margin-bottom: 15px; }
+.lbox h1 { margin-bottom: 25px; font-size: 22px; }
+.lbox input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px; outline: none; text-align: center; letter-spacing: 4px; }
+.lbox input:focus { border-color: #075e54; }
+.lbox button { width: 100%; padding: 14px; margin-top: 15px; background: #075e54; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
 .err { color: #e74c3c; font-size: 14px; margin-top: 12px; min-height: 20px; }
 
 .panel { display: none; }
 .panel.on { display: block; }
-.hdr { background: #075e54; color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; }
+.hdr { background: #075e54; color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 .hdr h1 { font-size: 20px; }
-.out { background: rgba(255,255,255,0.15); color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; }
-.tabs { display: flex; background: white; padding: 0 24px; border-bottom: 1px solid #e0e0e0; gap: 5px; }
-.tab { padding: 15px 20px; background: none; border: none; font-size: 15px; color: #65676b; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; }
+.out { background: rgba(255,255,255,0.15); color: white; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+.tabs { display: flex; background: white; padding: 0 24px; border-bottom: 1px solid #e0e0e0; gap: 5px; overflow-x: auto; }
+.tab { padding: 15px 20px; background: none; border: none; font-size: 15px; color: #65676b; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; font-weight: 500; }
 .tab.on { color: #075e54; border-bottom-color: #075e54; }
 .cont { display: none; padding: 24px; max-width: 900px; margin: 0 auto; }
 .cont.on { display: block; }
 .card { background: white; border-radius: 14px; padding: 24px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .card h2 { font-size: 17px; margin-bottom: 18px; }
-.row { display: flex; gap: 10px; }
-.row input { flex: 1; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; outline: none; }
+.card-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+.card-hdr h2 { margin: 0; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; }
+.row input { flex: 1; min-width: 140px; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; outline: none; }
 .row input:focus { border-color: #075e54; }
-.row button { padding: 12px 24px; background: #25d366; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
+.row button { padding: 12px 24px; background: #25d366; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.row button:hover { background: #1ebe5d; }
 .danger { padding: 8px 16px; background: #e74c3c; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 700; }
+.danger:hover { background: #c0392b; }
 
-.klist { display: flex; flex-direction: column; gap: 10px; }
-.kitem { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #f7f8fa; border-radius: 10px; gap: 12px; flex-wrap: wrap; }
-.kinfo { flex: 1; min-width: 200px; }
-.kname { font-weight: 700; margin-bottom: 4px; }
-.kval { font-family: 'Courier New', monospace; font-size: 14px; background: #e7f3ef; padding: 3px 8px; border-radius: 6px; display: inline-block; color: #075e54; font-weight: 700; }
-.kmeta { font-size: 11px; color: #999; margin-top: 6px; }
-.kacts { display: flex; gap: 8px; }
-.ib { width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; }
-.cp { background: #e7f3ef; }
-.tg { background: #fff3cd; }
-.dl { background: #fde8e8; }
-.kitem.pasif { opacity: 0.5; }
+.ulist, .mlist { display: flex; flex-direction: column; gap: 10px; }
+.uitem { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #f7f8fa; border-radius: 10px; gap: 12px; flex-wrap: wrap; }
+.uinfo { flex: 1; min-width: 200px; display: flex; align-items: center; gap: 12px; }
+.uav { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #25d366, #1ebe5d); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+.udet { flex: 1; }
+.uname { font-weight: 700; margin-bottom: 2px; }
+.ucode { font-family: 'Courier New', monospace; font-size: 13px; background: #e7f3ef; padding: 2px 8px; border-radius: 6px; display: inline-block; color: #075e54; font-weight: 700; margin-right: 6px; }
+.ustatus { font-size: 12px; color: #667781; }
+.umeta { font-size: 11px; color: #999; margin-top: 4px; }
+.uacts { display: flex; gap: 8px; }
+.ib { width: 36px; height: 36px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.edit { background: #e7f3ef; }
+.del { background: #fde8e8; }
+.admin-badge { background: #ffd700; color: #333; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 6px; }
 
-.mlist { display: flex; flex-direction: column; gap: 8px; max-height: 500px; overflow-y: auto; }
-.mitem { display: flex; justify-content: space-between; padding: 12px 14px; background: #f7f8fa; border-radius: 10px; gap: 12px; }
+.mitem { display: flex; justify-content: space-between; padding: 12px 14px; background: #f7f8fa; border-radius: 10px; gap: 12px; align-items: flex-start; }
+.mcontent { flex: 1; }
 .msender { font-weight: 700; color: #075e54; font-size: 13px; margin-bottom: 3px; }
 .mtext { font-size: 14px; word-break: break-word; }
 .mdate { font-size: 11px; color: #999; margin-top: 4px; }
-.mdel { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 16px; }
+.mdel { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 16px; padding: 5px; }
 
-.newkey { margin-top: 15px; padding: 15px; background: #e7f3ef; border-radius: 10px; border-left: 4px solid #25d366; }
-.newkey .l { font-size: 12px; color: #666; margin-bottom: 5px; }
-.newkey .v { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 700; color: #075e54; letter-spacing: 1px; word-break: break-all; }
+.newuser { margin-top: 15px; padding: 15px; background: #e7f3ef; border-radius: 10px; border-left: 4px solid #25d366; }
+.newuser .l { font-size: 12px; color: #666; margin-bottom: 5px; }
+.newuser .v { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 700; color: #075e54; letter-spacing: 1px; }
+
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal.on { display: flex; }
+.mbox { background: white; border-radius: 16px; padding: 24px; width: 100%; max-width: 400px; }
+.mbox h3 { margin-bottom: 18px; color: #075e54; }
+.mbox label { display: block; font-size: 13px; color: #666; margin: 12px 0 6px; font-weight: 600; }
+.mbox input { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; outline: none; }
+.mbox input:focus { border-color: #075e54; }
+.macts { display: flex; gap: 10px; margin-top: 20px; }
+.macts button { flex: 1; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; }
+.mcancel { background: #f0f2f5; color: #333; }
+.msave { background: #25d366; color: white; }
 
 @media (max-width: 600px) {
   .row { flex-direction: column; }
   .row button { width: 100%; }
-  .kitem { flex-direction: column; align-items: stretch; }
+  .uitem { flex-direction: column; align-items: stretch; }
+  .uacts { justify-content: flex-end; }
   .cont { padding: 16px; }
 }
 </style>
@@ -70,192 +89,81 @@ body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #f0f2f5; 
 <body>
 
 <div class="login" id="login">
-  <div class="login-box">
-    <div class="logo">🔐</div>
+  <div class="lbox">
+    <div class="llogo">🔐</div>
     <h1>Admin Panel</h1>
-    <input type="password" id="pw" placeholder="Şifre">
-    <button id="gir">Giriş</button>
+    <input type="password" id="pw" placeholder="••••">
+    <button id="gir">Giriş Yap</button>
     <div class="err" id="err"></div>
   </div>
 </div>
 
 <div class="panel" id="panel">
-  <div class="hdr">
+  <header class="hdr">
     <h1>🔐 Admin Panel</h1>
     <button class="out" id="cikis">Çıkış</button>
-  </div>
-  <div class="tabs">
-    <button class="tab on" data-t="keys">🔑 Keyler</button>
+  </header>
+  <nav class="tabs">
+    <button class="tab on" data-t="users">👥 Kullanıcılar</button>
     <button class="tab" data-t="msgs">💬 Mesajlar</button>
     <button class="tab" data-t="set">⚙️ Ayarlar</button>
-  </div>
+  </nav>
 
-  <div class="cont on" id="c-keys">
+  <section class="cont on" id="c-users">
     <div class="card">
-      <h2>Yeni Key Oluştur</h2>
+      <h2>Yeni Kullanıcı Oluştur</h2>
       <div class="row">
-        <input type="text" id="yeniAd" placeholder="İsim (örn: Aşkım)">
-        <button id="olustur">Oluştur</button>
+        <input type="text" id="nuName" placeholder="İsim (örn: Aşkım)">
+        <input type="tel" id="nuCode" placeholder="Şifre (4-8 hane)" maxlength="8">
+        <input type="text" id="nuAvatar" placeholder="Emoji (💕)" maxlength="4" style="max-width:100px;">
+        <button id="createUser">Oluştur</button>
       </div>
-      <div id="sonuc"></div>
+      <div id="newUserResult"></div>
     </div>
     <div class="card">
-      <h2>Mevcut Keyler</h2>
-      <div class="klist" id="klist"></div>
+      <h2>Kullanıcılar</h2>
+      <div class="ulist" id="ulist"></div>
     </div>
-  </div>
+  </section>
 
-  <div class="cont" id="c-msgs">
+  <section class="cont" id="c-msgs">
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
-        <h2 style="margin:0;">Mesajlar</h2>
-        <button class="danger" id="temizle">Tümünü Sil</button>
+      <div class="card-hdr">
+        <h2>Mesajlar</h2>
+        <button class="danger" id="clearAll">Tümünü Sil</button>
       </div>
       <div class="mlist" id="mlist"></div>
     </div>
-  </div>
+  </section>
 
-  <div class="cont" id="c-set">
+  <section class="cont" id="c-set">
     <div class="card">
       <h2>Admin Şifresini Değiştir</h2>
       <div class="row">
-        <input type="password" id="yeniPw" placeholder="Yeni şifre (min 4)">
-        <button id="pwDegis">Değiştir</button>
+        <input type="password" id="newPw" placeholder="Yeni şifre (min 4)">
+        <button id="changePw">Değiştir</button>
       </div>
-      <div id="pwSonuc" style="margin-top:12px;"></div>
+      <div id="pwResult" style="margin-top:12px;"></div>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="editModal">
+  <div class="mbox">
+    <h3>Kullanıcıyı Düzenle</h3>
+    <label>İsim</label>
+    <input type="text" id="euName">
+    <label>Şifre</label>
+    <input type="tel" id="euCode" maxlength="8">
+    <label>Emoji Avatar</label>
+    <input type="text" id="euAvatar" maxlength="4">
+    <div class="macts">
+      <button class="mcancel" id="editCancel">İptal</button>
+      <button class="msave" id="editSave">Kaydet</button>
     </div>
   </div>
 </div>
 
-<script>
-let token = localStorage.getItem('admin_t') || '';
-const $ = id => document.getElementById(id);
-
-$('gir').onclick = async () => {
-  const pw = $('pw').value;
-  const r = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: pw })
-  });
-  if (r.ok) {
-    const d = await r.json();
-    token = d.token;
-    localStorage.setItem('admin_t', token);
-    ac();
-  } else {
-    $('err').textContent = 'Yanlış şifre!';
-  }
-};
-$('pw').addEventListener('keypress', e => { if (e.key === 'Enter') $('gir').click(); });
-
-if (token) ac();
-
-function ac() {
-  $('login').style.display = 'none';
-  $('panel').classList.add('on');
-  keysYukle();
-  msgsYukle();
-}
-
-$('cikis').onclick = () => {
-  localStorage.removeItem('admin_t');
-  location.reload();
-};
-
-async function api(url, opt = {}) {
-  const r = await fetch(url, {
-    ...opt,
-    headers: { 'Content-Type': 'application/json', 'X-Token': token, ...(opt.headers || {}) }
-  });
-  if (r.status === 401) { localStorage.removeItem('admin_t'); location.reload(); }
-  return r.json();
-}
-
-// Tabs
-document.querySelectorAll('.tab').forEach(t => {
-  t.onclick = () => {
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
-    document.querySelectorAll('.cont').forEach(x => x.classList.remove('on'));
-    t.classList.add('on');
-    $('c-' + t.dataset.t).classList.add('on');
-  };
-});
-
-// Keyler
-async function keysYukle() {
-  const keys = await api('/api/keys');
-  const list = $('klist');
-  if (!keys.length) { list.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Henüz key yok</p>'; return; }
-  list.innerHTML = keys.map(k => `
-    <div class="kitem ${k.is_active ? '' : 'pasif'}">
-      <div class="kinfo">
-        <div class="kname">${esc(k.name)}</div>
-        <div class="kval">${k.key_value}</div>
-        <div class="kmeta">${tarih(k.created_at)} • ${k.is_active ? '🟢 Aktif' : '🔴 Pasif'}</div>
-      </div>
-      <div class="kacts">
-        <button class="ib cp" onclick="kopya('${k.key_value}')" title="Kopyala">📋</button>
-        <button class="ib tg" onclick="toggle(${k.id}, ${k.is_active})" title="Aktif/Pasif">${k.is_active ? '⏸' : '▶'}</button>
-        <button class="ib dl" onclick="sil(${k.id})" title="Sil">🗑</button>
-      </div>
-    </div>
-  `).join('');
-}
-
-$('olustur').onclick = async () => {
-  const name = $('yeniAd').value.trim();
-  if (!name) return alert('İsim gerekli');
-  const r = await api('/api/keys', { method: 'POST', body: JSON.stringify({ name }) });
-  if (r.success) {
-    $('sonuc').innerHTML = `<div class="newkey"><div class="l">Yeni key (${esc(name)}):</div><div class="v">${r.key}</div></div>`;
-    $('yeniAd').value = '';
-    keysYukle();
-  } else alert(r.error);
-};
-
-window.kopya = k => { navigator.clipboard.writeText(k); alert('Kopyalandı: ' + k); };
-window.sil = async id => { if (!confirm('Silinsin mi?')) return; await api('/api/keys/' + id, { method: 'DELETE' }); keysYukle(); };
-window.toggle = async (id, a) => { await api('/api/keys/' + id, { method: 'PATCH', body: JSON.stringify({ is_active: !a }) }); keysYukle(); };
-
-// Mesajlar
-async function msgsYukle() {
-  const msgs = await api('/api/messages');
-  const list = $('mlist');
-  if (!msgs.length) { list.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">Mesaj yok</p>'; return; }
-  list.innerHTML = msgs.map(m => `
-    <div class="mitem">
-      <div style="flex:1;">
-        <div class="msender">${esc(m.sender)}</div>
-        <div class="mtext">${esc(m.message)}</div>
-        <div class="mdate">${tarih(m.created_at)}</div>
-      </div>
-      <button class="mdel" onclick="msil(${m.id})">🗑</button>
-    </div>
-  `).join('');
-}
-
-window.msil = async id => { if (!confirm('Silinsin mi?')) return; await api('/api/messages/' + id, { method: 'DELETE' }); msgsYukle(); };
-$('temizle').onclick = async () => { if (!confirm('TÜM mesajlar silinsin mi?')) return; await api('/api/messages', { method: 'DELETE' }); msgsYukle(); };
-
-// Şifre
-$('pwDegis').onclick = async () => {
-  const np = $('yeniPw').value;
-  if (np.length < 4) { $('pwSonuc').textContent = 'En az 4 karakter!'; return; }
-  const r = await api('/api/password', { method: 'POST', body: JSON.stringify({ newPass: np }) });
-  if (r.success) {
-    token = r.newToken;
-    localStorage.setItem('admin_t', token);
-    $('pwSonuc').innerHTML = '<span style="color:#25d366;">✓ Şifre değişti</span>';
-    $('yeniPw').value = '';
-  }
-};
-
-function tarih(s) {
-  if (!s) return '-';
-  return new Date(s + 'Z').toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
-</script>
+<script src="admin.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 @echo off
-title Sevgili Sohbet
+title Bizim Sohbet
 color 0B
 
 if not exist "node_modules" (
@@ -10,12 +10,15 @@ if not exist "node_modules" (
 
 echo.
 echo ========================================
-echo    SEVGILI SOHBET
+echo    BIZIM SOHBET
 echo ========================================
 echo.
 echo    Sohbet:  http://localhost:3000
 echo    Admin:   http://localhost:3000/admin.html
 echo.
+echo    Test kullanicilari:
+echo    - Sen:   1111
+echo    - O:     2222
 echo    Admin sifre: admin123
 echo.
 

@@ -3,7 +3,7 @@ title Kurulum
 color 0A
 echo.
 echo ========================================
-echo    SEVGILI SOHBET - KURULUM
+echo    BIZIM SOHBET - KURULUM
 echo ========================================
 echo.
 
@@ -29,6 +29,6 @@ if %errorlevel% neq 0 (
 echo.
 echo ========================================
 echo    KURULUM TAMAM!
-echo    Simdi BASLAT.bat'i calistir
+echo    Simdi BASLAT.bat calistir
 echo ========================================
 pause
