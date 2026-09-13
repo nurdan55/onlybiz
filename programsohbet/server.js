@@ -168,12 +168,11 @@ class DatabaseLayer {
     }
 
     // Admin şifresi (sadece rakam)
-const ADMIN_PASS = process.env.ADMIN_PASS || '9999';
+const ADMIN_PASS = process.env.ADMIN_PASS || '999999';
 if (!db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_pass')) {
   db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run('admin_pass', ADMIN_PASS);
   console.log('👑 Admin şifresi:', ADMIN_PASS);
 }
-
     // Diğer ayarlar
     const defaults = {
       app_name: 'Bizim Sohbet',
