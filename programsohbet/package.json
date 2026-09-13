@@ -1,14 +1,27 @@
 {
   "name": "bizim-sohbet",
-  "version": "2.0.0",
+  "version": "3.0.0",
+  "description": "İki kişilik özel sohbet uygulaması — WhatsApp kalitesinde",
   "main": "server.js",
-  "engines": { "node": "20.x" },
+  "author": "Sen",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "reset-db": "node -e \"require('fs').rmSync('./data',{recursive:true,force:true});console.log('Veritabanı sıfırlandı')\""
   },
   "dependencies": {
     "express": "^4.18.2",
     "socket.io": "^4.7.2",
     "better-sqlite3": "^11.3.0"
+  },
+  "keywords": ["chat", "sohbet", "socket.io", "pwa", "sqlite"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nurdan55/onlybiz"
   }
 }

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>İkon Üretici - Bizim Sohbet</title>
+<style>
+  body { font-family: sans-serif; background: #0a0e27; color: white; padding: 40px; text-align: center; }
+  h1 { margin-bottom: 30px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; max-width: 900px; margin: 0 auto; }
+  .item { background: #131834; padding: 20px; border-radius: 12px; }
+  canvas { border-radius: 12px; max-width: 100%; }
+  p { margin-top: 10px; font-size: 14px; color: #818cf8; font-weight: 700; }
+  button { margin-top: 20px; padding: 12px 30px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 700; }
+  button:hover { background: #4f46e5; }
+</style>
+</head>
+<body>
+<h1>💕 Bizim Sohbet — İkon Üretici</h1>
+<p style="color: #7b8499; margin-bottom: 30px;">Aşağıdaki buton ile tüm ikonları indir</p>
+<div class="grid" id="grid"></div>
+<button onclick="downloadAll()">📥 Tümünü İndir</button>
+
+<script>
+const SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
+const APPLE_SIZE = 180;
+
+function drawIcon(canvas, size) {
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  // Gradient arka plan
+  const grad = ctx.createLinearGradient(0, 0, size, size);
+  grad.addColorStop(0, '#6366f1');
+  grad.addColorStop(0.5, '#8b5cf6');
+  grad.addColorStop(1, '#ec4899');
+  
+  // Yuvarlak arka plan (maskable için tam daire)
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+  
+  // Kalp emoji
+  ctx.font = `${size * 0.65}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('💕', size / 2, size / 2 + size * 0.03);
+  
+  // Hafif gölge
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.lineWidth = size * 0.02;
+  ctx.strokeRect(0, 0, size, size);
+}
+
+function createIcon(size, name) {
+  const canvas = document.createElement('canvas');
+  drawIcon(canvas, size);
+  return { canvas, name };
+}
+
+// Grid oluştur
+const grid = document.getElementById('grid');
+const icons = [];
+
+SIZES.forEach(size => {
+  const item = document.createElement('div');
+  item.className = 'item';
+  const { canvas, name } = createIcon(size, `icon-${size}.png`);
+  item.appendChild(canvas);
+  const p = document.createElement('p');
+  p.textContent = `${name} (${size}x${size})`;
+  item.appendChild(p);
+  grid.appendChild(item);
+  icons.push({ canvas, name });
+});
+
+// Apple touch icon
+{
+  const item = document.createElement('div');
+  item.className = 'item';
+  const { canvas, name } = createIcon(APPLE_SIZE, 'apple-touch-icon.png');
+  item.appendChild(canvas);
+  const p = document.createElement('p');
+  p.textContent = `${name} (${APPLE_SIZE}x${APPLE_SIZE})`;
+  item.appendChild(p);
+  grid.appendChild(item);
+  icons.push({ canvas, name });
+}
+
+function downloadAll() {
+  icons.forEach(({ canvas, name }, index) => {
+    setTimeout(() => {
+      const link = document.createElement('a');
+      link.download = name;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }, index * 200);
+  });
+  alert('İkonlar indiriliyor... İndirilen dosyaları public/icons/ klasörüne taşı.');
+}
+</script>
+</body>
+</html>

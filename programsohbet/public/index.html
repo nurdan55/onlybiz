@@ -1,148 +1,460 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="auto">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#075e54">
+<meta name="theme-color" content="#0a0e27">
+<meta name="description" content="Sadece ikimize özel sohbet uygulaması">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="💕 Sohbet">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
 <title>💕 Bizim Sohbetimiz</title>
 <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- GİRİŞ EKRANI -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">💕</div>
-    <h1>Bizim Sohbetimiz</h1>
-    <p class="login-sub">Sadece ikimize özel</p>
-    
-    <div class="input-group">
-      <input type="tel" id="loginCode" placeholder="Şifreni gir" maxlength="8" autocomplete="off" inputmode="numeric">
-    </div>
-    <button class="btn-primary" id="loginBtn">Giriş Yap 💌</button>
-    <div class="login-error" id="loginError"></div>
-    
-    <div class="login-footer">
-      <a href="/admin.html" class="admin-link">🔐 Admin Girişi</a>
+<!-- ============================================================
+     GİRİŞ EKRANI
+     ============================================================ -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-bg">
+    <div class="auth-blob blob-1"></div>
+    <div class="auth-blob blob-2"></div>
+    <div class="auth-blob blob-3"></div>
+  </div>
+
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-heart">💕</div>
+        <div class="logo-glow"></div>
+      </div>
+
+      <h1 class="auth-title">Bizim Sohbetimiz</h1>
+      <p class="auth-subtitle">Sadece ikimize özel, kimsenin bilmediği yer</p>
+
+      <form class="auth-form" id="loginForm" autocomplete="off">
+        <div class="input-wrap">
+          <span class="input-icon">🔑</span>
+          <input
+            type="tel"
+            id="loginCode"
+            class="auth-input"
+            placeholder="Şifreni gir"
+            maxlength="8"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            autocomplete="off"
+            required
+          >
+        </div>
+
+        <button type="submit" class="auth-btn" id="loginBtn">
+          <span class="btn-text">Giriş Yap</span>
+          <span class="btn-icon">💌</span>
+          <span class="btn-loader"></span>
+        </button>
+
+        <div class="auth-error" id="loginError"></div>
+      </form>
+
+      <div class="auth-footer">
+        <a href="/admin.html" class="admin-link">
+          <span class="admin-icon">🔐</span>
+          <span>Admin Girişi</span>
+        </a>
+      </div>
+
+      <div class="auth-version">v3.0.0</div>
     </div>
   </div>
 </div>
 
-<!-- SOHBET EKRANI -->
-<div class="chat-screen" id="chatScreen">
-  
-  <!-- Header -->
-  <header class="chat-header">
-    <div class="header-left">
-      <div class="header-avatar" id="myAvatar">💙</div>
+<!-- ============================================================
+     SOHBET EKRANI - MASAÜSTÜ + MOBİL UYUMLU
+     ============================================================ -->
+<div class="app-shell" id="appShell">
+
+  <!-- ============================================================
+       MASAÜSTÜ SIDEBAR (sadece masaüstünde görünür)
+       ============================================================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand">
+        <div class="brand-logo">💕</div>
+        <div class="brand-text">
+          <div class="brand-name">Bizim Sohbet</div>
+          <div class="brand-version">v3.0.0</div>
+        </div>
+      </div>
+      <button class="sidebar-toggle" id="sidebarToggle" title="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <!-- Profil özeti -->
+    <div class="sidebar-profile" id="sidebarProfile">
+      <div class="profile-avatar" id="sidebarAvatar">💙</div>
+      <div class="profile-info">
+        <div class="profile-name" id="sidebarName">Yükleniyor...</div>
+        <div class="profile-status" id="sidebarStatus">
+          <span class="status-dot online"></span>
+          <span class="status-text">Çevrimiçi</span>
+        </div>
+      </div>
+      <button class="profile-edit-btn" id="sidebarEditBtn" title="Profili düzenle">
+        <span>✏️</span>
+      </button>
+    </div>
+
+    <!-- Arama -->
+    <div class="sidebar-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="sidebarSearchInput" placeholder="Mesajlarda ara...">
+      <button class="search-clear" id="sidebarSearchClear" hidden>✕</button>
+    </div>
+
+    <!-- Online kullanıcılar -->
+    <div class="sidebar-section">
+      <div class="section-title">
+        <span>💫 Çevrimiçi</span>
+        <span class="badge" id="onlineCount">0</span>
+      </div>
+      <div class="online-list" id="onlineList"></div>
+    </div>
+
+    <!-- Pinlenen mesajlar -->
+    <div class="sidebar-section" id="pinnedSection" hidden>
+      <div class="section-title">
+        <span>📌 Pinlenen</span>
+      </div>
+      <div class="pinned-list" id="pinnedList"></div>
+    </div>
+
+    <div class="sidebar-spacer"></div>
+
+    <!-- Alt menü -->
+    <div class="sidebar-footer">
+      <button class="sidebar-item" id="themeBtn">
+        <span class="item-icon">🌗</span>
+        <span class="item-text">Tema Değiştir</span>
+      </button>
+      <button class="sidebar-item" id="settingsBtn">
+        <span class="item-icon">⚙️</span>
+        <span class="item-text">Ayarlar</span>
+      </button>
+      <button class="sidebar-item danger" id="logoutBtn">
+        <span class="item-icon">🚪</span>
+        <span class="item-text">Çıkış Yap</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       ANA SOHBET ALANI
+       ============================================================ -->
+  <main class="chat-main" id="chatMain">
+
+    <!-- Chat Header -->
+    <header class="chat-header" id="chatHeader">
+      <button class="header-menu-btn" id="headerMenuBtn" title="Menü">
+        <span>☰</span>
+      </button>
+
+      <div class="header-avatar" id="headerAvatar">💕</div>
+
       <div class="header-info">
-        <div class="header-title" id="chatTitle">Bizim Sohbetimiz</div>
-        <div class="header-status" id="onlineStatus">Bağlanıyor...</div>
+        <div class="header-name" id="headerName">Bizim Sohbetimiz</div>
+        <div class="header-status" id="headerStatus">
+          <span class="status-dot"></span>
+          <span>Bağlanıyor...</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="header-btn" id="searchToggleBtn" title="Ara">
+          <span>🔍</span>
+        </button>
+        <button class="header-btn" id="headerMoreBtn" title="Daha fazla">
+          <span>⋮</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Arama Barı (mobil) -->
+    <div class="search-bar" id="searchBar" hidden>
+      <input type="text" id="searchInput" placeholder="Mesajlarda ara...">
+      <button id="closeSearchBtn">✕</button>
+    </div>
+
+    <!-- Pinlenen mesaj banner -->
+    <div class="pinned-banner" id="pinnedBanner" hidden>
+      <div class="pin-icon">📌</div>
+      <div class="pin-content">
+        <div class="pin-label">Pinlenen mesaj</div>
+        <div class="pin-text" id="pinnedText"></div>
+      </div>
+      <button class="pin-close" id="unpinBtn" title="Kaldır">✕</button>
+    </div>
+
+    <!-- Mesajlar -->
+    <div class="messages" id="messages">
+      <div class="messages-loading" id="messagesLoading">
+        <div class="loader-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <p>Mesajlar yükleniyor...</p>
       </div>
     </div>
-    <div class="header-right">
-      <button class="icon-btn" id="searchBtn" title="Ara">🔍</button>
-      <button class="icon-btn" id="menuBtn" title="Menü">⋮</button>
+
+    <!-- Yazıyor göstergesi -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-avatar" id="typingAvatar">💕</div>
+      <div class="typing-bubble">
+        <span class="typing-text" id="typingText">yazıyor</span>
+        <span class="typing-dots">
+          <span></span><span></span><span></span>
+        </span>
+      </div>
     </div>
-  </header>
 
-  <!-- Arama çubuğu -->
-  <div class="search-bar" id="searchBar">
-    <input type="text" id="searchInput" placeholder="Mesajlarda ara...">
-    <button id="closeSearch">✕</button>
-  </div>
+    <!-- Yanıtlanan mesaj önizleme -->
+    <div class="reply-preview" id="replyPreview" hidden>
+      <div class="reply-bar"></div>
+      <div class="reply-content">
+        <div class="reply-label">
+          <span class="reply-icon">↩️</span>
+          <span id="replyName">Yanıtlanan</span>
+        </div>
+        <div class="reply-text" id="replyText"></div>
+      </div>
+      <button class="reply-close" id="replyClose">✕</button>
+    </div>
 
-  <!-- Mesajlar -->
-  <div class="messages" id="messages"></div>
+    <!-- Emoji paneli -->
+    <div class="emoji-panel" id="emojiPanel" hidden>
+      <div class="emoji-tabs" id="emojiTabs">
+        <button class="emoji-tab active" data-cat="all">😀 Tümü</button>
+        <button class="emoji-tab" data-cat="smileys">😊 Yüzler</button>
+        <button class="emoji-tab" data-cat="hearts">❤️ Kalpler</button>
+        <button class="emoji-tab" data-cat="animals">🐱 Hayvanlar</button>
+        <button class="emoji-tab" data-cat="food">🍕 Yiyecek</button>
+        <button class="emoji-tab" data-cat="objects">🎁 Nesneler</button>
+      </div>
+      <div class="emoji-grid" id="emojiGrid"></div>
+    </div>
 
-  <!-- Yazıyor göstergesi -->
-  <div class="typing" id="typing"></div>
+    <!-- Mesaj formu -->
+    <form class="composer" id="messageForm" autocomplete="off">
+      <button type="button" class="composer-btn emoji-btn" id="emojiBtn" title="Emoji">
+        <span>😊</span>
+      </button>
 
-  <!-- Emoji paneli -->
-  <div class="emoji-panel" id="emojiPanel">
-    <div class="emoji-grid" id="emojiGrid"></div>
-  </div>
+      <div class="composer-input-wrap">
+        <input
+          type="text"
+          id="messageInput"
+          class="composer-input"
+          placeholder="Mesaj yaz..."
+          maxlength="4000"
+          autocomplete="off"
+        >
+      </div>
 
-  <!-- Mesaj formu -->
-  <form class="message-form" id="messageForm">
-    <button type="button" class="icon-btn emoji-btn" id="emojiBtn">😊</button>
-    <input type="text" id="messageInput" placeholder="Mesaj yaz..." autocomplete="off">
-    <button type="button" class="icon-btn mic-btn" id="micBtn" title="Ses kaydet">🎤</button>
-    <button type="submit" class="send-btn" id="sendBtn" title="Gönder">
-      <svg viewBox="0 0 24 24" width="22" height="22">
-        <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-      </svg>
-    </button>
-  </form>
+      <button type="button" class="composer-btn mic-btn" id="micBtn" title="Ses kaydet">
+        <span id="micIcon">🎤</span>
+      </button>
+
+      <button type="submit" class="composer-btn send-btn" id="sendBtn" title="Gönder">
+        <svg viewBox="0 0 24 24" width="22" height="22">
+          <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </form>
+
+  </main>
+
+  <!-- ============================================================
+       MOBİL SIDEBAR (mobilde overlay)
+       ============================================================ -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay"></div>
+
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-header">
+      <div class="drawer-avatar" id="drawerAvatar">💙</div>
+      <div class="drawer-info">
+        <div class="drawer-name" id="drawerName">Kullanıcı</div>
+        <div class="drawer-status" id="drawerStatus">Hayat güzel</div>
+      </div>
+      <button class="drawer-close" id="drawerClose">✕</button>
+    </div>
+
+    <div class="drawer-menu">
+      <button class="drawer-item" id="mEditProfileBtn">
+        <span class="item-icon">✏️</span>
+        <span>Profili Düzenle</span>
+      </button>
+      <button class="drawer-item" id="mThemeBtn">
+        <span class="item-icon">🌗</span>
+        <span>Tema Değiştir</span>
+      </button>
+      <button class="drawer-item" id="mSettingsBtn">
+        <span class="item-icon">⚙️</span>
+        <span>Ayarlar</span>
+      </button>
+      <div class="drawer-divider"></div>
+      <button class="drawer-item danger" id="mLogoutBtn">
+        <span class="item-icon">🚪</span>
+        <span>Çıkış Yap</span>
+      </button>
+    </div>
+  </aside>
+
 </div>
 
-<!-- Kayıt göstergesi -->
-<div class="recording-overlay" id="recordingOverlay">
-  <div class="recording-box">
-    <div class="recording-dot"></div>
+<!-- ============================================================
+     SES KAYIT OVERLAY
+     ============================================================ -->
+<div class="recording-overlay" id="recordingOverlay" hidden>
+  <div class="recording-card">
+    <div class="recording-pulse">
+      <div class="pulse-ring"></div>
+      <div class="pulse-dot"></div>
+    </div>
     <div class="recording-time" id="recordingTime">0:00</div>
-    <div class="recording-hint">Kaydı durdurmak için mikrofona bas</div>
+    <div class="recording-hint">Kaydı bitirmek için mikrofona bas</div>
+    <div class="recording-wave" id="recordingWave"></div>
   </div>
 </div>
 
-<!-- Menü -->
-<div class="menu-overlay" id="menuOverlay">
-  <div class="menu-card">
-    <div class="menu-profile" id="menuProfile">
-      <div class="menu-avatar" id="menuAvatar">💙</div>
-      <div class="menu-name" id="menuName">Ben</div>
-      <div class="menu-status" id="menuStatus">Hayat güzel</div>
-    </div>
-    <button class="menu-item" id="editProfileBtn">✏️ Profilimi Düzenle</button>
-    <button class="menu-item" id="settingsBtn">⚙️ Ayarlar</button>
-    <button class="menu-item danger" id="logoutBtn">🚪 Çıkış Yap</button>
-    <button class="menu-close" id="menuClose">Kapat</button>
-  </div>
-</div>
-
-<!-- Profil düzenleme -->
-<div class="modal-overlay" id="profileModal">
+<!-- ============================================================
+     PROFİL DÜZENLE MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="profileModal" hidden>
   <div class="modal-card">
-    <h3>Profilimi Düzenle</h3>
-    <div class="avatar-picker">
-      <div class="avatar-preview" id="avatarPreview">💙</div>
-      <div class="avatar-options" id="avatarOptions"></div>
+    <div class="modal-header">
+      <h2>✏️ Profili Düzenle</h2>
+      <button class="modal-close" id="profileModalClose">✕</button>
     </div>
-    <label>Adın</label>
-    <input type="text" id="profileName" maxlength="20">
-    <label>Durum</label>
-    <input type="text" id="profileStatus" maxlength="40" placeholder="Hayat güzel">
-    <div class="modal-actions">
+
+    <div class="modal-body">
+      <div class="avatar-picker">
+        <div class="avatar-preview" id="avatarPreview">💙</div>
+        <div class="avatar-options" id="avatarOptions"></div>
+      </div>
+
+      <label class="modal-label">Adın</label>
+      <input type="text" id="profileName" class="modal-input" maxlength="20" placeholder="Adın">
+
+      <label class="modal-label">Durum</label>
+      <input type="text" id="profileStatus" class="modal-input" maxlength="60" placeholder="Ne düşünüyorsun?">
+
+      <label class="modal-label">Hakkımda</label>
+      <textarea id="profileBio" class="modal-input modal-textarea" maxlength="200" placeholder="Kısa bir bio..."></textarea>
+    </div>
+
+    <div class="modal-footer">
       <button class="btn-secondary" id="profileCancel">İptal</button>
       <button class="btn-primary" id="profileSave">Kaydet</button>
     </div>
   </div>
 </div>
 
-<!-- Ayarlar -->
-<div class="modal-overlay" id="settingsModal">
+<!-- ============================================================
+     AYARLAR MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="settingsModal" hidden>
   <div class="modal-card">
-    <h3>Ayarlar</h3>
-    <div class="setting-item">
-      <label>
-        <input type="checkbox" id="soundToggle" checked>
-        <span>Bildirim sesi</span>
-      </label>
+    <div class="modal-header">
+      <h2>⚙️ Ayarlar</h2>
+      <button class="modal-close" id="settingsModalClose">✕</button>
     </div>
-    <div class="setting-item">
-      <label>
-        <input type="checkbox" id="notifToggle" checked>
-        <span>Tarayıcı bildirimi</span>
-      </label>
+
+    <div class="modal-body">
+      <div class="setting-group">
+        <div class="setting-title">🔔 Bildirimler</div>
+        <label class="setting-item">
+          <span>Bildirim sesi</span>
+          <input type="checkbox" id="soundToggle" class="toggle" checked>
+        </label>
+        <label class="setting-item">
+          <span>Tarayıcı bildirimi</span>
+          <input type="checkbox" id="notifToggle" class="toggle" checked>
+        </label>
+        <label class="setting-item">
+          <span>Sekme başlığında göster</span>
+          <input type="checkbox" id="tabTitleToggle" class="toggle" checked>
+        </label>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-title">🎨 Görünüm</div>
+        <div class="setting-item">
+          <span>Tema</span>
+          <select id="themeSelect" class="modal-select">
+            <option value="auto">Otomatik</option>
+            <option value="light">Açık</option>
+            <option value="dark">Koyu</option>
+          </select>
+        </div>
+        <div class="setting-item">
+          <span>Duvar kağıdı</span>
+          <select id="wallpaperSelect" class="modal-select">
+            <option value="default">Varsayılan</option>
+            <option value="dots">Noktalar</option>
+            <option value="waves">Dalgalar</option>
+            <option value="plain">Düz</option>
+            <option value="hearts">Kalpler</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <div class="setting-title">📊 Bilgi</div>
+        <div class="setting-item info">
+          <span>Sürüm</span>
+          <span id="infoVersion">v3.0.0</span>
+        </div>
+        <div class="setting-item info">
+          <span>Toplam mesaj</span>
+          <span id="infoMessages">0</span>
+        </div>
+      </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn-primary" id="settingsClose">Tamam</button>
+
+    <div class="modal-footer">
+      <button class="btn-primary" id="settingsSave">Tamam</button>
     </div>
   </div>
 </div>
+
+<!-- ============================================================
+     MESAJ AKSİYON MENÜSÜ (uzun basma)
+     ============================================================ -->
+<div class="context-menu" id="contextMenu" hidden>
+  <button class="context-item" data-action="reply">
+    <span>↩️</span> Yanıtla
+  </button>
+  <button class="context-item" data-action="pin">
+    <span>📌</span> Pinle
+  </button>
+  <button class="context-item" data-action="copy">
+    <span>📋</span> Kopyala
+  </button>
+  <button class="context-item danger" data-action="delete">
+    <span>🗑️</span> Sil
+  </button>
+</div>
+
+<!-- ============================================================
+     TOAST BİLDİRİM
+     ============================================================ -->
+<div class="toast-container" id="toastContainer"></div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="app.js"></script>
