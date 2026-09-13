@@ -167,13 +167,12 @@ class DatabaseLayer {
       logger.success('Varsayılan kullanıcılar oluşturuldu', { codes: ['1111', '2222'] });
     }
 
-    // Admin şifresi
-    const adminPass = this.db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_pass');
-    if (!adminPass) {
-      const pass = this._hash('admin123');
-      this.db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run('admin_pass', pass);
-      logger.success('Varsayılan admin şifresi: admin123');
-    }
+    // Admin şifresi (sadece rakam)
+const ADMIN_PASS = process.env.ADMIN_PASS || '9999';
+if (!db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_pass')) {
+  db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run('admin_pass', ADMIN_PASS);
+  console.log('👑 Admin şifresi:', ADMIN_PASS);
+}
 
     // Diğer ayarlar
     const defaults = {
