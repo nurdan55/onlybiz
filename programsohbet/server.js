@@ -169,9 +169,10 @@ class DatabaseLayer {
 
     // Admin şifresi (sadece rakam)
 const ADMIN_PASS = process.env.ADMIN_PASS || '999999';
-if (!db.prepare('SELECT value FROM settings WHERE key = ?').get('admin_pass')) {
-  db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)').run('admin_pass', ADMIN_PASS);
-  console.log('👑 Admin şifresi:', ADMIN_PASS);
+// Admin şifresi - Environment variable'dan veya varsayılan
+const ADMIN_PASS = process.env.ADMIN_PASS || '999999';
+db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run('admin_pass', ADMIN_PASS);
+console.log('👑 Admin şifresi ayarlandı:', ADMIN_PASS);
 }
     // Diğer ayarlar
     const defaults = {
